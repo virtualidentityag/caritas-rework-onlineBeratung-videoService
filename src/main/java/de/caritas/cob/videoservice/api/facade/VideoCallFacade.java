@@ -20,6 +20,7 @@ import de.caritas.cob.videoservice.api.service.statistics.event.StartVideoCallSt
 import de.caritas.cob.videoservice.api.service.statistics.event.StopVideoCallStatisticsEvent;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.api.service.video.VideoRoomService;
+import de.caritas.cob.videoservice.api.tenant.TenantContext;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
@@ -85,15 +86,17 @@ public class VideoCallFacade {
         singletonList(consultantSessionDto.getAskerId()));
 
     this.videoRoomService.createOneToOneVideoRoom(
-        consultantSessionDto.getId(),
-        consultantSessionDto.getGroupId(),
-        videoCallUuid,
-        videoCallUrls.getModeratorVideoUrl());
+        consultantSessionDto.getId(), consultantSessionDto.getGroupId(), videoCallUuid);
     var createVideoCallResponseDto =
         new VideoCallResponseDTO().moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
     statisticsService.fireEvent(
         new StartVideoCallStatisticsEvent(
-            authenticatedUser.getUserId(), UserRole.CONSULTANT, sessionId, videoCallUuid));
+            authenticatedUser.getUserId(),
+            UserRole.CONSULTANT,
+            sessionId,
+            videoCallUuid,
+            consultantSessionDto.getAskerId(),
+            TenantContext.getCurrentTenant()));
 
     log.info("Started one to one video call for sessionId {}", sessionId);
     return createVideoCallResponseDto;
@@ -124,15 +127,13 @@ public class VideoCallFacade {
 
     var groupVideoRoom =
         this.videoRoomService.createGroupVideoRoom(
-            createVideoCallRequest.getGroupChatId(),
-            chatById.getGroupId(),
-            videoCallUuid,
-            videoCallUrls.getUserVideoUrl());
+            createVideoCallRequest.getGroupChatId(), chatById.getGroupId(), videoCallUuid);
 
     messageService.createAndSendVideoCallStartedMessage(
         chatById.getGroupId(),
         authenticatedUser.getUsername(),
         groupVideoRoom,
+        videoCallUrls.getUserVideoUrl(),
         createVideoCallRequest.getInitiatorDisplayName(),
         initiatorRcUserId);
 
