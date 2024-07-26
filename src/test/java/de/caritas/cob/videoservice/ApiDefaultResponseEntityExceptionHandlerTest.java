@@ -1,41 +1,29 @@
 package de.caritas.cob.videoservice;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.powermock.reflect.Whitebox.setInternalState;
 
-import de.caritas.cob.videoservice.api.service.LogService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ApiDefaultResponseEntityExceptionHandlerTest {
+@ExtendWith(MockitoExtension.class)
+class ApiDefaultResponseEntityExceptionHandlerTest {
 
   @InjectMocks private ApiDefaultResponseEntityExceptionHandler exceptionHandler;
 
-  @Mock private Logger logger;
-
-  @Before
-  public void setup() {
-    setInternalState(LogService.class, "LOGGER", logger);
-  }
-
   @Test
-  public void handleInternal_Should_logInternalServerError_When_exceptionIsGiven() {
+  void handleInternal_Should_respondWithStatusInternalServerError_When_exceptionIsGiven() {
     RuntimeException exception = new RuntimeException("error");
 
-    this.exceptionHandler.handleInternal(exception, mock(WebRequest.class));
+    ResponseEntity<Object> objectResponseEntity =
+        this.exceptionHandler.handleInternal(exception, mock(WebRequest.class));
 
-    verify(this.logger, times(1))
-        .error(eq("VideoService API: 500 Internal Server Error: {}"), anyString());
+    assertThat(objectResponseEntity.getStatusCode(), equalTo(HttpStatus.INTERNAL_SERVER_ERROR));
   }
 }

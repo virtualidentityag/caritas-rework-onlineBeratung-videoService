@@ -14,31 +14,33 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.12</version>
+		<version>3.0.6</version>
 		<relativePath/>
 	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<keycloak.version>17.0.0</keycloak.version>
 		<!-- force at least version 2.16 due to https://logging.apache.org/log4j/2.x/security.html -->
 		<log4j.version>2.19.0</log4j.version>
-		<openapi-generator-maven-plugin.version>6.2.1</openapi-generator-maven-plugin.version>
-		<springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+		<openapi-generator-maven-plugin.version>6.6.0</openapi-generator-maven-plugin.version>
+
 		<jackson-databind-nullable.version>0.2.3</jackson-databind-nullable.version>
-		<spring-swagger-ui.version>2.10.0</spring-swagger-ui.version>
-		<spring-security-core.version>5.7.5</spring-security-core.version>
+
+		<spring-security.version>6.0.5</spring-security.version>
 		<ehcache.version>2.10.9.2</ehcache.version>
 		<javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
 		<java-jwt.version>3.12.1</java-jwt.version>
 		<commons-lang3.version>3.11</commons-lang3.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<h2.version>2.1.214</h2.version>
-		<liquibase-core.version>4.9.1</liquibase-core.version>
+		<liquibase-core.version>4.23.2</liquibase-core.version>
 		<hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
-		<liquibase.maven.plugin.version>4.1.1</liquibase.maven.plugin.version>
+		<liquibase.maven.plugin.version>4.23.2</liquibase.maven.plugin.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 
 	</properties>
 
@@ -60,12 +62,32 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+
 		<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${spring-security-core.version}</version>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring-security.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+
 
 		<!-- caching dependencies -->
 		<dependency>
@@ -90,7 +112,7 @@
 			<version>4.3.1</version>
 		</dependency>
 
-		<!-- OpenApi/Swagger dependencies -->
+		<!-- OpenApi dependencies -->
 		<dependency>
 			<groupId>org.openapitools</groupId>
 			<artifactId>openapi-generator-maven-plugin</artifactId>
@@ -103,6 +125,26 @@
 			<version>${jackson-databind-nullable.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>2.2.15</version>
+		</dependency>
+		<!-- SpringFox: generate YAML file from POJOs and generate documentation -->
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
 		<!-- json dependencies -->
 		<dependency>
 			<groupId>org.json</groupId>
@@ -110,12 +152,6 @@
 			<version>20220320</version>
 		</dependency>
 
-		<!-- SpringFox: generate YAML file from POJOs and generate documentation -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-boot-starter</artifactId>
-			<version>${springfox-boot-starter.version}</version>
-		</dependency>
 		<!-- Keycloak dependencies -->
 		<dependency>
 			<groupId>org.keycloak</groupId>
@@ -150,6 +186,12 @@
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-maven-plugin</artifactId>
 			<version>${liquibase.maven.plugin.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.liquibase</groupId>
+					<artifactId>liquibase-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -201,6 +243,7 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
+
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -210,19 +253,14 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
+			<version>${spring-security.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<artifactId>powermock-module-junit4</artifactId>
-			<groupId>org.powermock</groupId>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
 			<scope>test</scope>
-			<version>2.0.2</version>
-		</dependency>
-		<dependency>
-			<artifactId>powermock-api-mockito2</artifactId>
-			<groupId>org.powermock</groupId>
-			<scope>test</scope>
-			<version>2.0.2</version>
 		</dependency>
 		<!-- EasyRandom -->
 		<dependency>
@@ -263,7 +301,10 @@
 			<version>${log4j.version}</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
+		</dependency>
 
 	</dependencies>
 
@@ -306,7 +347,9 @@
 							<configOptions>
 								<interfaceOnly>true</interfaceOnly>
 								<sourceFolder>/</sourceFolder>
+								<useSpringBoot3>true</useSpringBoot3>
 							</configOptions>
+
 							<inputSpec>${project.basedir}/api/videoservice.yaml</inputSpec>
 							<generatorName>spring</generatorName>
 							<apiPackage>${project.groupId}.${project.artifactId}.generated.api.controller

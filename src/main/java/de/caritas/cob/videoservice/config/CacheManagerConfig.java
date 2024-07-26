@@ -2,9 +2,7 @@ package de.caritas.cob.videoservice.config;
 
 import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,21 +24,10 @@ public class CacheManagerConfig {
   @Value("${cache.tenant.configuration.timeToLiveSeconds}")
   private long tenantTimeToLiveSeconds;
 
-  @Bean
-  public CacheManager cacheManager() {
-    return new EhCacheCacheManager(ehCacheManager());
-  }
-
-  /**
-   * Defines cache manager.
-   *
-   * @return
-   */
   @Bean(destroyMethod = "shutdown")
   public net.sf.ehcache.CacheManager ehCacheManager() {
     var config = new net.sf.ehcache.config.Configuration();
     config.addCache(buildTenantCacheConfiguration());
-
     return net.sf.ehcache.CacheManager.newInstance(config);
   }
 

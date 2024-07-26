@@ -63,7 +63,9 @@ public class JsonHelperTest {
             + "\","
             + "  \"videoCallUuid\":\""
             + uuid
-            + "\""
+            + "\","
+            + "\"adviceSeekerId\": null,"
+            + "\"tenantId\": null"
             + "}";
 
     assertThat(result.get(), jsonEquals(expectedJson));

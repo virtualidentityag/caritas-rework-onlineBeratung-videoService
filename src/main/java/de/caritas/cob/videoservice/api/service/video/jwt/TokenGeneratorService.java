@@ -7,14 +7,13 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.algorithms.Algorithm;
-import de.caritas.cob.videoservice.api.authorization.VideoUser;
+import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -25,12 +24,11 @@ import org.springframework.stereotype.Service;
 public class TokenGeneratorService {
 
   @Autowired
-  public TokenGeneratorService(
-      @NonNull @Qualifier("AuthenticatedOrAnonymousUser") VideoUser authenticatedUser) {
+  public TokenGeneratorService(@NonNull AuthenticatedUser authenticatedUser) {
     this.videoUser = authenticatedUser;
   }
 
-  private final @NonNull VideoUser videoUser;
+  private final @NonNull AuthenticatedUser videoUser;
 
   private static final String ROOM_CLAIM = "room";
   private static final String MODERATOR_CLAIM = "moderator";

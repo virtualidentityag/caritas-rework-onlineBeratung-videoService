@@ -27,13 +27,15 @@ public class StartVideoCallStatisticsEventTest {
   @Before
   public void setup() {
     uuid = UUID.randomUUID();
+    adviceSeekerUuid = UUID.randomUUID();
     startVideoCallStatisticsEvent =
         new StartVideoCallStatisticsEvent(
             CONSULTANT_ID,
             UserRole.CONSULTANT,
             SESSION_ID,
             uuid.toString(),
-            adviceSeekerUuid.toString());
+            adviceSeekerUuid.toString(),
+            1L);
   }
 
   @Test
@@ -64,7 +66,11 @@ public class StartVideoCallStatisticsEventTest {
             + "\","
             + "  \"videoCallUuid\":\""
             + uuid
-            + "\""
+            + "\","
+            + "  \"adviceSeekerId\":\""
+            + adviceSeekerUuid
+            + "\","
+            + "  \"tenantId\":1"
             + "}";
 
     Optional<String> result = startVideoCallStatisticsEvent.getPayload();

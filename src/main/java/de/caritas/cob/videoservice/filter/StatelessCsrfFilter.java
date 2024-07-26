@@ -1,17 +1,17 @@
 package de.caritas.cob.videoservice.filter;
 
+import static de.caritas.cob.videoservice.config.security.WebSecurityConfig.WHITE_LIST;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import de.caritas.cob.videoservice.config.SpringFoxConfig;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.regex.Pattern;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -73,8 +73,7 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
      */
     @Override
     public boolean matches(HttpServletRequest request) {
-
-      if (Arrays.stream(SpringFoxConfig.WHITE_LIST)
+      if (Arrays.stream(WHITE_LIST.toArray(String[]::new))
           .parallel()
           .anyMatch(request.getRequestURI().toLowerCase()::contains)) {
         return false;

@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-import de.caritas.cob.videoservice.api.authorization.VideoUser;
+import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ import org.springframework.http.MediaType;
 public class SecurityHeaderSupplierTest {
 
   @InjectMocks private SecurityHeaderSupplier securityHeaderSupplier;
-  @Mock private VideoUser videoUser;
+  @Mock private AuthenticatedUser videoUser;
 
   @Before
   public void setup() {

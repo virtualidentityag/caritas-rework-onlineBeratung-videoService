@@ -21,9 +21,9 @@ import de.caritas.cob.videoservice.api.service.session.UserServiceApiControllerF
 import de.caritas.cob.videoservice.userservice.generated.ApiClient;
 import de.caritas.cob.videoservice.userservice.generated.web.UserControllerApi;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;

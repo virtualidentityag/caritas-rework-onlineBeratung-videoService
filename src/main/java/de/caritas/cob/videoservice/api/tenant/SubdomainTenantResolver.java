@@ -5,8 +5,8 @@ import static java.util.Optional.of;
 
 import de.caritas.cob.videoservice.api.service.TenantService;
 import de.caritas.cob.videoservice.filter.SubdomainExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;

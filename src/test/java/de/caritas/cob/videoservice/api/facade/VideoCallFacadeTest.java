@@ -11,6 +11,7 @@ import static de.caritas.cob.videoservice.api.testhelper.TestConstants.VIDEO_CAL
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
-import de.caritas.cob.videoservice.api.authorization.VideoUser;
+import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.VideoCallResponseDTO;
@@ -47,24 +48,24 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import org.jeasy.random.EasyRandom;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@RunWith(SpringRunner.class)
-public class VideoCallFacadeTest {
+@ExtendWith(SpringExtension.class)
+class VideoCallFacadeTest {
 
   @InjectMocks private VideoCallFacade videoCallFacade;
   @Mock private SessionService sessionService;
   @Mock private LiveEventNotificationService liveEventNotificationService;
   @Mock private VideoCallUrlGeneratorService videoCallUrlGeneratorService;
-  @Mock private VideoUser authenticatedUser;
+  @Mock private AuthenticatedUser authenticatedUser;
   @Mock private UuidRegistry uuidRegistry;
   @Mock private StatisticsService statisticsService;
 
@@ -75,12 +76,13 @@ public class VideoCallFacadeTest {
   @Mock private MessageService messageService;
 
   @Test
-  public void startVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
+  void startVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
     // given
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
     when(consultantSessionDto.getStatus()).thenReturn(IN_PROGRESS.getValue());
+    when(consultantSessionDto.getAskerId()).thenReturn("askerId");
     VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
@@ -96,8 +98,7 @@ public class VideoCallFacadeTest {
   }
 
   @Test
-  public void
-      startGroupVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
+  void startGroupVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
 
     // given
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
@@ -132,8 +133,8 @@ public class VideoCallFacadeTest {
     assertThat(captor.getValue()).containsExactlyInAnyOrder("anotherUserId");
   }
 
-  @Test(expected = AccessDeniedException.class)
-  public void startGroupVideoCall_Should_ThrowForbiddenException_When_UserDoesNotHavePermissions() {
+  @Test
+  void startGroupVideoCall_Should_ThrowForbiddenException_When_UserDoesNotHavePermissions() {
     // given
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
@@ -142,13 +143,15 @@ public class VideoCallFacadeTest {
         .when(chatService)
         .assertCanModerateChat(GROUP_CHAT_ID);
 
-    // when
-    videoCallFacade.startVideoCall(new CreateVideoCallDTO().groupChatId(GROUP_CHAT_ID), "rcUserId");
+    // when, then
+    CreateVideoCallDTO createVideoCallRequest = new CreateVideoCallDTO().groupChatId(GROUP_CHAT_ID);
+    assertThrows(
+        AccessDeniedException.class,
+        () -> videoCallFacade.startVideoCall(createVideoCallRequest, "rcUserId"));
   }
 
   @Test
-  public void
-      joinGroupVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
+  void joinGroupVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
 
     // given
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
@@ -159,6 +162,7 @@ public class VideoCallFacadeTest {
 
     VideoRoomEntity videoRoomEntity = new EasyRandom().nextObject(VideoRoomEntity.class);
     videoRoomEntity.setGroupChatId(GROUP_CHAT_ID);
+    videoRoomEntity.setSessionId(null);
     when(videoRoomService.findByJitsiRoomId(VIDEO_CALL_UUID))
         .thenReturn(Optional.of(videoRoomEntity));
 
@@ -172,18 +176,19 @@ public class VideoCallFacadeTest {
     assertThat(result.getModeratorVideoCallUrl()).isEqualTo(videoCallUrls.getModeratorVideoUrl());
   }
 
-  @Test(expected = NoSuchElementException.class)
-  public void joinGroupVideoCall_Should_ThrowNoSuchElementException_When_GivenChatNotFound() {
-    // when
-    videoCallFacade.joinGroupVideoCall(VIDEO_CALL_UUID);
+  @Test
+  void joinGroupVideoCall_Should_ThrowNoSuchElementException_When_GivenChatNotFound() {
+    assertThrows(
+        NoSuchElementException.class, () -> videoCallFacade.joinGroupVideoCall(VIDEO_CALL_UUID));
   }
 
-  @Test(expected = AccessDeniedException.class)
-  public void joinGroupVideoCall_Should_ThrowForbiddenException_When_UserIsNotModerator() {
+  @Test
+  void joinGroupVideoCall_Should_ThrowForbiddenException_When_UserIsNotModerator() {
     // given
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
     VideoRoomEntity videoRoomEntity = new EasyRandom().nextObject(VideoRoomEntity.class);
+    videoRoomEntity.setSessionId(null);
     videoRoomEntity.setGroupChatId(GROUP_CHAT_ID);
     when(videoRoomService.findByJitsiRoomId(VIDEO_CALL_UUID))
         .thenReturn(Optional.of(videoRoomEntity));
@@ -193,11 +198,12 @@ public class VideoCallFacadeTest {
         .assertCanModerateChat(GROUP_CHAT_ID);
 
     // when
-    videoCallFacade.joinGroupVideoCall(VIDEO_CALL_UUID);
+    assertThrows(
+        AccessDeniedException.class, () -> videoCallFacade.joinGroupVideoCall(VIDEO_CALL_UUID));
   }
 
   @Test
-  public void
+  void
       startVideoCall_Should_CallLiveServiceAndBuildCorrectLiveEventMessageWithVideoCallRequestDto() {
 
     // given
@@ -228,8 +234,8 @@ public class VideoCallFacadeTest {
     assertEquals(USERNAME, eventContent.getInitiatorUsername());
   }
 
-  @Test(expected = BadRequestException.class)
-  public void startVideoCall_Should_throwBadRequestException_When_sessionIsNotInProgress() {
+  @Test
+  void startVideoCall_Should_throwBadRequestException_When_sessionIsNotInProgress() {
     // given
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
@@ -239,17 +245,21 @@ public class VideoCallFacadeTest {
         .thenReturn(consultantSessionDto);
 
     // when
-    videoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "");
+    CreateVideoCallDTO createVideoCallRequest = new CreateVideoCallDTO().sessionId(SESSION_ID);
+    assertThrows(
+        BadRequestException.class,
+        () -> videoCallFacade.startVideoCall(createVideoCallRequest, ""));
   }
 
   @Test
-  public void startVideoCall_Should_FireAssignSessionStatisticsEvent() {
+  void startVideoCall_Should_FireAssignSessionStatisticsEvent() {
 
     // given
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
     when(consultantSessionDto.getStatus()).thenReturn(IN_PROGRESS.getValue());
+    when(consultantSessionDto.getAskerId()).thenReturn("askerId");
     VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
@@ -283,7 +293,7 @@ public class VideoCallFacadeTest {
   }
 
   @Test
-  public void
+  void
       startVideoCall_Should_FireAssignSessionStatisticsEventWithDisplayName_When_initiatorDisplayNameIsSet() {
 
     // given
@@ -291,6 +301,7 @@ public class VideoCallFacadeTest {
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
     when(consultantSessionDto.getStatus()).thenReturn(IN_PROGRESS.getValue());
+    when(consultantSessionDto.getAskerId()).thenReturn("askerId");
     VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
@@ -315,7 +326,7 @@ public class VideoCallFacadeTest {
   }
 
   @Test
-  public void handleVideoCallStoppedEvent_Should_StopPeristentVideoCallRoom() {
+  void handleVideoCallStoppedEvent_Should_StopPeristentVideoCallRoom() {
 
     // given
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
@@ -338,7 +349,7 @@ public class VideoCallFacadeTest {
   }
 
   @Test
-  public void handleVideoCallStoppedEvent_Should_StopPeristentVideoCallRoomForOneToOneCall() {
+  void handleVideoCallStoppedEvent_Should_StopPeristentVideoCallRoomForOneToOneCall() {
 
     // given
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
