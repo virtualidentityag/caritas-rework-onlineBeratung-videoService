@@ -82,54 +82,6 @@ paths:
         - Bearer: [ ]
       x-codegen-request-body-name: Message
 
-  /messages/feedback/new:
-    post:
-      tags:
-        - message-controller
-      summary: 'Add new Rocket.Chat message to feedback chat [Authorization: authority
-        for feedback chat]'
-      operationId: createFeedbackMessage
-      parameters:
-        - name: rcToken
-          in: header
-          required: true
-          schema:
-            type: string
-        - name: rcUserId
-          in: header
-          required: true
-          schema:
-            type: string
-        - name: rcFeedbackGroupId
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          'application/json':
-            schema:
-              $ref: '#/components/schemas/MessageDTO'
-        required: true
-      responses:
-        201:
-          description: CREATED - message was successfully created
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/MessageResponseDTO'
-        400:
-          description: BAD REQUEST - invalid/incomplete request or body object
-        401:
-          description: UNAUTHORIZED - no/invalid Keycloak token
-        403:
-          description: FORBIDDEN - no/invalid role/authorization
-        500:
-          description: INTERNAL SERVER ERROR - server encountered unexpected condition
-      security:
-        - Bearer: [ ]
-      x-codegen-request-body-name: Message
-
   /messages/videohint/new:
     post:
       tags:
