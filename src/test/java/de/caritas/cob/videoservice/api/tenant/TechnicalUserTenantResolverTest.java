@@ -62,7 +62,8 @@ class TechnicalUserTenantResolverTest {
   void resolve_should_NotResolveTenantId_When_NonTechnicalUserRole() {
     // given
     givenUserIsAuthenticated();
-    when(mockAuthentication.getPrincipal()).thenReturn((Object) buildJwtWithRealmRole("another-role"));
+    when(mockAuthentication.getPrincipal())
+        .thenReturn((Object) buildJwtWithRealmRole("another-role"));
     var resolved = technicalUserTenantResolver.resolve(authenticatedRequest);
     // then
     assertThat(resolved).isEmpty();
@@ -78,7 +79,11 @@ class TechnicalUserTenantResolverTest {
     headers.put("alg", "HS256"); // Signature algorithm
     headers.put("typ", "JWT"); // Token type
     return new Jwt(
-        "token", Instant.now(), Instant.now().plusSeconds(1), headers, givenClaimMapContainingRole(realmRole));
+        "token",
+        Instant.now(),
+        Instant.now().plusSeconds(1),
+        headers,
+        givenClaimMapContainingRole(realmRole));
   }
 
   private HashMap<String, Object> givenClaimMapContainingRole(String realmRole) {
