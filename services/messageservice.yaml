@@ -578,7 +578,6 @@ components:
         - "APPOINTMENT_CANCELLED"
         - "APPOINTMENT_RESCHEDULED"
         - "FINISHED_CONVERSATION"
-        - "FORWARD"
         - "FURTHER_STEPS"
         - "UPDATE_SESSION_DATA"
         - "VIDEOCALL"
