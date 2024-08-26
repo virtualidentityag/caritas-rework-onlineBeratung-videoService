@@ -1228,34 +1228,10 @@ components:
     AliasMessageDTO:
       type: object
       properties:
-        forwardMessageDTO:
-          $ref: '#/components/schemas/ForwardMessageDTO'
         videoCallMessageDTO:
           $ref: '#/components/schemas/VideoCallMessageDTO'
         messageType:
           $ref: '#/components/schemas/MessageType'
-
-    ForwardMessageDTO:
-      type: object
-      required:
-        - message
-        - timestamp
-        - username
-        - rcUserId
-      properties:
-        message:
-          type: string
-          example: "Lorem ipsum dolor sit amet, consetetur..."
-        timestamp:
-          type: string
-          description: "Full qualified timestamp"
-          example: "2018-11-15T09:33:00.057Z"
-        username:
-          type: string
-          example: "asker23"
-        rcUserId:
-          type: string
-          example: "ag89h3tjkerg94t"
 
     VideoCallMessageDTO:
       type: object
