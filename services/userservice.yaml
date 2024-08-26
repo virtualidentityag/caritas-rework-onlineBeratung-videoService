@@ -1256,7 +1256,6 @@ components:
       enum:
         - "FURTHER_STEPS"
         - "UPDATE_SESSION_DATA"
-        - "FORWARD"
         - "VIDEOCALL"
 
     ConsultantSessionDTO:
