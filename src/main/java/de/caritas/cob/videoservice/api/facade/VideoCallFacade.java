@@ -4,7 +4,7 @@ import static de.caritas.cob.videoservice.api.service.session.SessionStatus.IN_P
 import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import de.caritas.cob.videoservice.api.authorization.VideoUser;
+import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.VideoCallResponseDTO;
@@ -26,7 +26,6 @@ import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMess
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
 import de.caritas.cob.videoservice.statisticsservice.generated.web.model.UserRole;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
-import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,7 @@ public class VideoCallFacade {
 
   private final @NonNull ChatService chatService;
   private final @NonNull LiveEventNotificationService liveEventNotificationService;
-  private final @NonNull VideoUser authenticatedUser;
+  private final @NonNull AuthenticatedUser authenticatedUser;
   private final @NonNull VideoCallUrlGeneratorService videoCallUrlGeneratorService;
   private final @NonNull UuidRegistry uuidRegistry;
   private final @NonNull StatisticsService statisticsService;
@@ -116,7 +115,7 @@ public class VideoCallFacade {
         chatMembers.getMembers().stream()
             .filter(member -> !initiatorRcUserId.equals(member.getId()))
             .map(member -> member.getUserId())
-            .collect(Collectors.toList());
+            .toList();
     this.liveEventNotificationService.sendVideoCallRequestLiveEvent(
         buildLiveEventMessage(
             chatById.getGroupId(),

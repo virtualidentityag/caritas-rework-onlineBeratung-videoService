@@ -1,8 +1,12 @@
 package de.caritas.cob.videoservice.api.authorization;
 
+import com.google.common.collect.Lists;
+import java.util.List;
 import java.util.stream.Stream;
+import lombok.Getter;
 
 /** Definition of all authorities and of the role-authority-mapping. */
+@Getter
 public enum Authority {
   CONSULTANT(UserRole.CONSULTANT, "AUTHORIZATION_CONSULTANT_DEFAULT"),
   USER(UserRole.USER, "AUTHORIZATION_USER_DEFAULT"),
@@ -10,11 +14,11 @@ public enum Authority {
   JITSI_TECHNICAL(UserRole.JITSI_TECHNICAL, "AUTHORIZATION_JITSI_TECHNICAL_DEFAULT");
 
   private final UserRole role;
-  private final String authorityName;
+  private final List<String> authorities;
 
   Authority(final UserRole role, final String authorityName) {
     this.role = role;
-    this.authorityName = authorityName;
+    this.authorities = Lists.newArrayList(authorityName);
   }
 
   /**
@@ -30,12 +34,13 @@ public enum Authority {
         .orElse(null);
   }
 
-  /**
-   * Returns the authority name for the given {@link Authority}.
-   *
-   * @return authority name for the given {@link Authority}
-   */
-  public String getAuthority() {
-    return this.authorityName;
+  public static class AuthorityValue {
+
+    private AuthorityValue() {}
+
+    public static final String PREFIX = "AUTHORIZATION_";
+    public static final String CONSULTANT = PREFIX + "CONSULTANT_DEFAULT";
+    public static final String USER = PREFIX + "USER_DEFAULT";
+    public static final String JITSI_TECHNICAL = PREFIX + "JITSI_TECHNICAL_DEFAULT";
   }
 }

@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class VideoUser {
+public class AuthenticatedUser {
 
   @NonNull private String userId;
 

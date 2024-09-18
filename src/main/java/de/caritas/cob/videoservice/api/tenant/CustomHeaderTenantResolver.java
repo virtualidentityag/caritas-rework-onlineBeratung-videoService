@@ -1,8 +1,8 @@
 package de.caritas.cob.videoservice.api.tenant;
 
 import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;

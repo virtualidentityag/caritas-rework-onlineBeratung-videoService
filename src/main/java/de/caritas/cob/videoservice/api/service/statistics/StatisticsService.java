@@ -2,8 +2,8 @@ package de.caritas.cob.videoservice.api.service.statistics;
 
 import de.caritas.cob.videoservice.api.service.LogService;
 import de.caritas.cob.videoservice.api.service.statistics.event.StatisticsEvent;
+import jakarta.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
-import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
