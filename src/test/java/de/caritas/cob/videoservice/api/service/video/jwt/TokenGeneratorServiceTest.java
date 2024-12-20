@@ -13,7 +13,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.impl.NullClaim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import de.caritas.cob.videoservice.api.authorization.VideoUser;
+import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class TokenGeneratorServiceTest {
 
   @InjectMocks private TokenGeneratorService tokenGeneratorService;
 
-  @Mock private VideoUser authenticatedUser;
+  @Mock private AuthenticatedUser authenticatedUser;
 
   @Before
   public void setup() {

@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.NonNull;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,7 +29,7 @@ public class CustomResponseErrorHandler extends DefaultResponseErrorHandler {
     throw new InternalServerErrorException(response.getStatusText());
   }
 
-  private boolean isLoopThroughStatusCode(HttpStatus httpStatus) {
+  private boolean isLoopThroughStatusCode(HttpStatusCode httpStatus) {
     return LOOP_THROUGH_STATUS_CODES.contains(httpStatus);
   }
 }

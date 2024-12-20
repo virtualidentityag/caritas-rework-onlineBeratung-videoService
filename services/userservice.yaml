@@ -538,33 +538,6 @@ paths:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
       security:
         - Bearer: [ ]
-  /users/mails/messages/feedback/new:
-    post:
-      tags:
-        - user-controller
-      summary: 'Sends a notification e-mail that a new feedback message/answer has
-        been written [Authorization: Role: consultant with authority for feedback
-        chat]'
-      operationId: sendNewFeedbackMessageNotification
-      requestBody:
-        content:
-          'application/json':
-            schema:
-              $ref: '#/components/schemas/NewMessageNotificationDTO'
-        required: true
-      responses:
-        200:
-          description: successful operation
-        400:
-          description: BAD REQUEST - invalid/incomplete request or body object
-        401:
-          description: UNAUTHORIZED - invalid token
-        409:
-          description: CONFLICT - no user e-mail address in db given
-        500:
-          description: INTERNAL SERVER ERROR - server encountered unexpected condition
-      security:
-        - Bearer: [ ]
   /users/consultants:
     get:
       tags:
@@ -1211,10 +1184,6 @@ components:
           type: string
           example: xGklslk2JJKK
           description: Rocket.Chat room ID
-        feedbackGroupId:
-          type: string
-          example: 8ertjlasdKJA
-          description: Rocket.Chat feedback room ID
         askerRcId:
           type: string
           example: 8ertjlasdKJA
@@ -1229,9 +1198,6 @@ components:
         messagesRead:
           type: boolean
           example: false
-        feedbackRead:
-          type: boolean
-          example: true
         isTeamSession:
           type: boolean
           example: false
@@ -1262,34 +1228,10 @@ components:
     AliasMessageDTO:
       type: object
       properties:
-        forwardMessageDTO:
-          $ref: '#/components/schemas/ForwardMessageDTO'
         videoCallMessageDTO:
           $ref: '#/components/schemas/VideoCallMessageDTO'
         messageType:
           $ref: '#/components/schemas/MessageType'
-
-    ForwardMessageDTO:
-      type: object
-      required:
-        - message
-        - timestamp
-        - username
-        - rcUserId
-      properties:
-        message:
-          type: string
-          example: "Lorem ipsum dolor sit amet, consetetur..."
-        timestamp:
-          type: string
-          description: "Full qualified timestamp"
-          example: "2018-11-15T09:33:00.057Z"
-        username:
-          type: string
-          example: "asker23"
-        rcUserId:
-          type: string
-          example: "ag89h3tjkerg94t"
 
     VideoCallMessageDTO:
       type: object
@@ -1314,7 +1256,6 @@ components:
       enum:
         - "FURTHER_STEPS"
         - "UPDATE_SESSION_DATA"
-        - "FORWARD"
         - "VIDEOCALL"
 
     ConsultantSessionDTO:
@@ -1343,10 +1284,6 @@ components:
           type: string
           example: xGklslk2JJKK
           description: Rocket.Chat room ID
-        feedbackGroupId:
-          type: string
-          example: 8ertjlasdKJA
-          description: Rocket.Chat feedback room ID
         consultantId:
           type: string
           example: 926b9777-4eef-443d-925a-4aa534797bd7

@@ -13,12 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class RoleAuthorizationAuthorityMapper implements GrantedAuthoritiesMapper {
 
-  /**
-   * Maps all {@link Authority} definitions to the corresponding roles.
-   *
-   * @param authorities all given authorities
-   * @return mapped role authorities collections
-   */
   @Override
   public Collection<? extends GrantedAuthority> mapAuthorities(
       Collection<? extends GrantedAuthority> authorities) {
@@ -31,11 +25,12 @@ public class RoleAuthorizationAuthorityMapper implements GrantedAuthoritiesMappe
     return mapAuthorities(roleNames);
   }
 
-  private Set<GrantedAuthority> mapAuthorities(Set<String> roleNames) {
+  public Set<GrantedAuthority> mapAuthorities(Set<String> roleNames) {
     return roleNames.stream()
         .map(Authority::fromRoleName)
         .filter(Objects::nonNull)
-        .map(Authority::getAuthority)
+        .map(Authority::getAuthorities)
+        .flatMap(Collection::parallelStream)
         .map(SimpleGrantedAuthority::new)
         .collect(Collectors.toSet());
   }

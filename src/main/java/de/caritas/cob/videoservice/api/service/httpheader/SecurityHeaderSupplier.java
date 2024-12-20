@@ -1,6 +1,6 @@
 package de.caritas.cob.videoservice.api.service.httpheader;
 
-import de.caritas.cob.videoservice.api.authorization.VideoUser;
+import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SecurityHeaderSupplier {
 
-  private final @NonNull VideoUser authenticatedUser;
+  private final @NonNull AuthenticatedUser authenticatedUser;
 
   @Value("${csrf.header.property}")
   private String csrfHeaderProperty;

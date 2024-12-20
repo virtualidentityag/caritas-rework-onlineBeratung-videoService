@@ -1,12 +1,12 @@
 package de.caritas.cob.videoservice.api.authorization;
 
-import static de.caritas.cob.videoservice.api.authorization.Authority.CONSULTANT;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ROLE_CONSULTANT;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
+import de.caritas.cob.videoservice.api.authorization.Authority.AuthorityValue;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +32,7 @@ public class RoleAuthorizationAuthoritiesMapperTest {
         this.roleAuthorizationAuthorityMapper.mapAuthorities(grantedAuthorities);
 
     assertThat(mappedAuthorities, hasSize(1));
-    assertThat(mappedAuthorities.iterator().next().getAuthority(), is(CONSULTANT.getAuthority()));
+    assertThat(mappedAuthorities.iterator().next().getAuthority(), is(AuthorityValue.CONSULTANT));
   }
 
   @Test
@@ -47,7 +47,7 @@ public class RoleAuthorizationAuthoritiesMapperTest {
         this.roleAuthorizationAuthorityMapper.mapAuthorities(grantedAuthorities);
 
     assertThat(mappedAuthorities, hasSize(1));
-    assertThat(mappedAuthorities.iterator().next().getAuthority(), is(CONSULTANT.getAuthority()));
+    assertThat(mappedAuthorities.iterator().next().getAuthority(), is(AuthorityValue.CONSULTANT));
   }
 
   @Test

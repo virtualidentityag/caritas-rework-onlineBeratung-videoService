@@ -20,6 +20,8 @@ import de.caritas.cob.videoservice.api.facade.VideoCallFacade;
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
 import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
+import de.caritas.cob.videoservice.config.security.AuthorisationService;
+import de.caritas.cob.videoservice.config.security.JwtAuthConverterProperties;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +43,10 @@ public class VideoControllerIT {
   @MockBean private VideoCallFacade videoCallFacade;
 
   @MockBean private RejectVideoCallService rejectVideoCallService;
+
+  @MockBean private AuthorisationService authorisationService;
+
+  @MockBean private JwtAuthConverterProperties jwtAuthConverterProperties;
 
   @MockBean
   @SuppressWarnings("unused")

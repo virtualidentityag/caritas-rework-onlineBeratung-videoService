@@ -220,8 +220,6 @@ components:
   schemas:
     CreateVideoCallDTO:
       type: object
-      required:
-        - sessionId
       properties:
         sessionId:
           type: integer

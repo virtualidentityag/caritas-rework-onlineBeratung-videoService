@@ -64,7 +64,6 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
    * @param request web request
    * @return response entity
    */
-  @Override
   @NonNull
   protected ResponseEntity<Object> handleHttpMessageNotReadable(
       final @NonNull HttpMessageNotReadableException ex,
@@ -85,7 +84,6 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
    * @param request web request
    * @return response entity
    */
-  @Override
   @NonNull
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
       final @NonNull MethodArgumentNotValidException ex,
@@ -148,7 +146,7 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     LogService.logWarning(ex);
 
     return handleExceptionInternal(
-        EMPTY_EXCEPTION, null, new HttpHeaders(), ex.getStatus(), request);
+        EMPTY_EXCEPTION, null, new HttpHeaders(), ex.getStatusCode(), request);
   }
 
   /**

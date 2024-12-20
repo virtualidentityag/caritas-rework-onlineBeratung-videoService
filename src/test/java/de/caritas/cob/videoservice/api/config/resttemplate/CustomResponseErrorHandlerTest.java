@@ -46,7 +46,7 @@ public class CustomResponseErrorHandlerTest {
       handleErrorGet(url);
       fail("Exception was not thrown");
     } catch (ResponseStatusException e) {
-      assertThat(e.getStatus(), is(HttpStatus.FORBIDDEN));
+      assertThat(e.getStatusCode(), is(HttpStatus.FORBIDDEN));
       assertThat(e.getReason(), is("GET http://test.de"));
     }
   }
@@ -62,7 +62,7 @@ public class CustomResponseErrorHandlerTest {
       handleErrorGet(url);
       fail("Exception was not thrown");
     } catch (ResponseStatusException e) {
-      assertThat(e.getStatus(), is(HttpStatus.NOT_FOUND));
+      assertThat(e.getStatusCode(), is(HttpStatus.NOT_FOUND));
       assertThat(e.getReason(), is("GET http://test.de"));
     }
   }
@@ -86,7 +86,7 @@ public class CustomResponseErrorHandlerTest {
       handleErrorPost(url);
       fail("Exception was not thrown");
     } catch (ResponseStatusException e) {
-      assertThat(e.getStatus(), is(HttpStatus.BAD_REQUEST));
+      assertThat(e.getStatusCode(), is(HttpStatus.BAD_REQUEST));
       assertThat(e.getReason(), is("POST http://test.de"));
     }
   }

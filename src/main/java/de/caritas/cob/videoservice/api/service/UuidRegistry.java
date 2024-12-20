@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UuidRegistry {
 
-  private static final List<UUID> GENERATED_UUIDS = new CopyOnWriteArrayList<>();
+  protected static final List<UUID> GENERATED_UUIDS = new CopyOnWriteArrayList<>();
 
   /**
    * Generates an unique {@link UUID} string that is currently not registered and adds it to the

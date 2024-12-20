@@ -44,7 +44,7 @@ public class StatisticsServiceIT {
     UUID uuid = UUID.randomUUID();
     StartVideoCallStatisticsEvent startVideoCallStatisticsEvent =
         new StartVideoCallStatisticsEvent(
-            CONSULTANT_ID, UserRole.CONSULTANT, SESSION_ID, uuid.toString(), ADVICESEEKER_ID);
+            CONSULTANT_ID, UserRole.CONSULTANT, SESSION_ID, uuid.toString(), ADVICESEEKER_ID, 1L);
 
     statisticsService.fireEvent(startVideoCallStatisticsEvent);
     Message message =
@@ -73,7 +73,8 @@ public class StatisticsServiceIT {
             + "\","
             + "  \"videoCallUuid\":\""
             + uuid
-            + "\""
+            + "\","
+            + "\"tenantId\":1"
             + "}";
 
     assertThat(
